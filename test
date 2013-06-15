@@ -10,12 +10,28 @@ cloudstack = CloudStack.Client(api, apikey, secret)
 
 vms = cloudstack.listVirtualMachines()
 
+vmcount = 0
+
+print 'No',
 print "{0:20} {1:10}".format('VM Name', 'State')
 print '-'*30
+
 for vm in vms:
+    state = vm['state']
+    if state == 'Running':
     #print repr (vm['name']), repr (vm['state']).ljust(10)
-    print "{0:20} {1:10}".format(vm['name'][0:20], vm['state'])
+	vmcount += 1
+	print '{0:2d}'.format(vmcount),
+	print "{0:20} {1:10}".format(vm['name'][0:20], vm['state'])
     #print repr ((vm['name'], vm['state']))
     #print "{0} {1}".format(vm['name'], vm['state'])
     #print "%s %s" % (vm['name'], vm['state'])
     #print "%s %s %s" % (vm['id'], vm['name'], vm['state'])
+
+for vm in vms:
+    state = vm['state']
+    if state != 'Running':
+    #print repr (vm['name']), repr (vm['state']).ljust(10)
+	print '{0:2d}'.format(vmcount),
+	print "{0:20} {1:10}".format(vm['name'][0:20], vm['state'])
+	vmcount += 1
