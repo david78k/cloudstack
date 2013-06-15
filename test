@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import CloudStack
+import json
 
 api = 'http://c11node27:8080/client/api'
 apikey = 'YojbgijFzzAPo64t1ZPcAXXMNLFfIK6sNpmCOuNzSOCGzOgmiTqNYdxHJwPzUGYYgUjD8Mao0JM-ymQ3fP_65w'
@@ -13,25 +14,36 @@ vms = cloudstack.listVirtualMachines()
 vmcount = 0
 
 print 'No',
-print "{0:20} {1:10}".format('VM Name', 'State')
+#print "{0:20} {1:10} {2:3} {3:3} {4:3} {5:3}".format('VM Name', 'State', 'Ping', 'Network', 'Memory', 'Disk')
+print "{0:30} {1:10} {2:3} {3:12} {4:4} {5:3}".format('VM Name', 'State', 'Ping', 'Network', 'Memory', 'HA-enabled', 'Disk')
 print '-'*30
 
-for vm in vms:
-    state = vm['state']
-    if state == 'Running':
-    #print repr (vm['name']), repr (vm['state']).ljust(10)
-	vmcount += 1
-	print '{0:2d}'.format(vmcount),
-	print "{0:20} {1:10}".format(vm['name'][0:20], vm['state'])
-    #print repr ((vm['name'], vm['state']))
-    #print "{0} {1}".format(vm['name'], vm['state'])
-    #print "%s %s" % (vm['name'], vm['state'])
-    #print "%s %s %s" % (vm['id'], vm['name'], vm['state'])
+def listVMs(paramState):
+	global vmcount 
+	running = 'Running'
+	for vm in vms:
+	    #print json.dumps(vm, indent=4)
+	    state = vm['state']
+	    #if state == 'Running':
+	    if (paramState == running and state == paramState) or \
+		(paramState != running and state != running):
+		vmcount += 1
+		print '{0:2d}'.format(vmcount),
+		print "{0:30} {1:10} {2:3} {3:14} {4:4} {5:3}".format(vm['name'][0:18] + ' (' + vm['instancename'] + ')', vm['state'], 'OK', vm['nic'][0]['ipaddress'], vm['memory'], vm['haenable'])
+		#print "{0:20} {1:10} {2:3} {3:10} {4:10} {5:10}".format(vm['name'][0:20], vm['state'], 'OK', vm['nic'][0]['ipaddress'], vm['instancename'], vm['memory'])
+	    #print repr ((vm['name'], vm['state']))
+   	 #print "{0} {1}".format(vm['name'], vm['state'])
+ 	   #print "%s %s %s" % (vm['id'], vm['name'], vm['state'])
 
+'''
 for vm in vms:
     state = vm['state']
     if state != 'Running':
     #print repr (vm['name']), repr (vm['state']).ljust(10)
+	vmcount += 1
 	print '{0:2d}'.format(vmcount),
 	print "{0:20} {1:10}".format(vm['name'][0:20], vm['state'])
-	vmcount += 1
+'''
+
+listVMs('Running')
+listVMs('Not Running')
