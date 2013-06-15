@@ -1,0 +1,21 @@
+#!/usr/bin/python
+
+import CloudStack
+
+api = 'http://c11node27:8080/client/api'
+apikey = 'YojbgijFzzAPo64t1ZPcAXXMNLFfIK6sNpmCOuNzSOCGzOgmiTqNYdxHJwPzUGYYgUjD8Mao0JM-ymQ3fP_65w'
+secret = '9SYWn1Gq1epD_gQL5fhg4SA6R3IShoXOhLkviuZaJdhvtunMxW0yLTbT9jKzs1tOWsqrvmNH0WmSC7WMnpNvjA'
+
+cloudstack = CloudStack.Client(api, apikey, secret)
+
+vms = cloudstack.listVirtualMachines()
+
+print "{0:20} {1:10}".format('VM Name', 'State')
+print '-'*30
+for vm in vms:
+    #print repr (vm['name']), repr (vm['state']).ljust(10)
+    print "{0:20} {1:10}".format(vm['name'][0:20], vm['state'])
+    #print repr ((vm['name'], vm['state']))
+    #print "{0} {1}".format(vm['name'], vm['state'])
+    #print "%s %s" % (vm['name'], vm['state'])
+    #print "%s %s %s" % (vm['id'], vm['name'], vm['state'])
