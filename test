@@ -1,26 +1,55 @@
 #!/usr/bin/python
 
 import CloudStack
-import json
+import json, subprocess
+from threading import Thread
+from Queue import Queue
 
 api = 'http://c11node27:8080/client/api'
 apikey = 'YojbgijFzzAPo64t1ZPcAXXMNLFfIK6sNpmCOuNzSOCGzOgmiTqNYdxHJwPzUGYYgUjD8Mao0JM-ymQ3fP_65w'
 secret = '9SYWn1Gq1epD_gQL5fhg4SA6R3IShoXOhLkviuZaJdhvtunMxW0yLTbT9jKzs1tOWsqrvmNH0WmSC7WMnpNvjA'
+timeout = 1
 
 cloudstack = CloudStack.Client(api, apikey, secret)
-
 vms = cloudstack.listVirtualMachines()
-
 vmcount = 0
+
+#wraps system ping command
+#def pinger(vm, q):
+def pinger(q):
+    """Pings subnet"""
+    while True:
+        #ip = q.get()
+        vm = q.get()
+	name = vm['name']
+	#ip = vm.addr
+	ip = vm['nic'][0]['ipaddress'] 
+        #print "Thread %s: Pinging %s" % (name, ip)
+        ret = subprocess.call("ping -c 1 -w %d %s" % (timeout, ip),
+                        shell=True,
+                        stdout=open('/dev/null', 'w'),
+                        stderr=subprocess.STDOUT)
+        if ret == 0:
+            print "%s (%s): is alive" % (ip, name)
+	    vm['ping'] = 'OK'
+#	    vm.S += 'alive)'
+        else:
+            print "%s (%s): did not respond" % (ip, name)
+	    vm['ping'] = 'X'
+#	    vm.S += 'timeout)'
+        q.task_done()
 
 print 'No',
 #print "{0:20} {1:10} {2:3} {3:3} {4:3} {5:3}".format('VM Name', 'State', 'Ping', 'Network', 'Memory', 'Disk')
-print "{0:30} {1:9} {2:3} {3:12} {4:4} {5:3}".format('VM Name', 'State', 'Ping', 'Network', 'Memory', 'HA-enabled', 'Disk')
+print "{0:30} {1:9} {2:3} {3:13} {4:4} {5:3}".format('VM Name', \
+	'State', 'Ping', 'Network', 'Memory', 'HA', 'Disk')
 print '-'*80
 
 def listVMs(paramState):
 	global vmcount 
 	running = 'Running'
+	queue = Queue()
+
 	for vm in vms:
 	    #print json.dumps(vm, indent=4)
 	    state = vm['state']
@@ -29,7 +58,13 @@ def listVMs(paramState):
 		(paramState != running and state != running):
 		ping = 'OK'
 		if state != running:
-			ping = 'X'
+			ping = '-'
+		else:
+			worker = Thread(target=pinger, args=(queue, ))
+			worker.setDaemon(True)
+			worker.start()
+			queue.put(vm)		
+
 		vmcount += 1
 		print '{0:2d}'.format(vmcount),
 		print "{0:30} {1:10} {2:3} {3:14} {4:4} {5:3}".\
@@ -40,6 +75,7 @@ def listVMs(paramState):
 	    #print repr ((vm['name'], vm['state']))
    	 #print "{0} {1}".format(vm['name'], vm['state'])
  	   #print "%s %s %s" % (vm['id'], vm['name'], vm['state'])
+	queue.join()
 
 '''
 for vm in vms:
@@ -53,3 +89,4 @@ for vm in vms:
 
 listVMs('Running')
 listVMs('Not Running')
+
