@@ -8,6 +8,7 @@ from Queue import Queue
 api = 'http://c11node27:8080/client/api'
 apikey = 'YojbgijFzzAPo64t1ZPcAXXMNLFfIK6sNpmCOuNzSOCGzOgmiTqNYdxHJwPzUGYYgUjD8Mao0JM-ymQ3fP_65w'
 secret = '9SYWn1Gq1epD_gQL5fhg4SA6R3IShoXOhLkviuZaJdhvtunMxW0yLTbT9jKzs1tOWsqrvmNH0WmSC7WMnpNvjA'
+debug = 0
 timeout = 1
 
 cloudstack = CloudStack.Client(api, apikey, secret)
@@ -30,14 +31,17 @@ def pinger(q):
                         stdout=open('/dev/null', 'w'),
                         stderr=subprocess.STDOUT)
         if ret == 0:
-            print "%s (%s): is alive" % (ip, name)
+	    if debug:
+            	print "%s (%s): is alive" % (ip, name)
 	    vm['ping'] = 'OK'
 #	    vm.S += 'alive)'
         else:
-            print "%s (%s): did not respond" % (ip, name)
+	    if debug:
+            	print "%s (%s): did not respond" % (ip, name)
 	    vm['ping'] = 'X'
 #	    vm.S += 'timeout)'
         q.task_done()
+	#print json.dumps(vm, indent=4)
 
 print 'No',
 #print "{0:20} {1:10} {2:3} {3:3} {4:3} {5:3}".format('VM Name', 'State', 'Ping', 'Network', 'Memory', 'Disk')
@@ -45,37 +49,52 @@ print "{0:30} {1:9} {2:3} {3:13} {4:4} {5:3}".format('VM Name', \
 	'State', 'Ping', 'Network', 'Memory', 'HA', 'Disk')
 print '-'*80
 
-def listVMs(paramState):
+def printVM(vm):
 	global vmcount 
+	vmcount += 1
+	print '{0:2d}'.format(vmcount),
+	print "{0:30} {1:10} {2:3} {3:14} {4:4} {5:3}".\
+	format(vm['name'][0:18] + ' (' + vm['instancename'] + ')', vm['state'], vm['ping'], vm['nic'][0]['ipaddress'], vm['memory'], \
+			vm['haenable'])
+
+#def listVMs(paramState):
+def listVMs():
 	running = 'Running'
 	queue = Queue()
+	rvms = []
+	nrvms = []
 
 	for vm in vms:
 	    #print json.dumps(vm, indent=4)
-	    state = vm['state']
+		state = vm['state']
 	    #if state == 'Running':
-	    if (paramState == running and state == paramState) or \
-		(paramState != running and state != running):
-		ping = 'OK'
+	    #if (paramState == running and state == paramState) or \
+#		(paramState != running and state != running):
 		if state != running:
-			ping = '-'
+			vm['ping'] = '-'
+			nrvms.append(vm)
 		else:
+			rvms.append(vm)
 			worker = Thread(target=pinger, args=(queue, ))
 			worker.setDaemon(True)
 			worker.start()
 			queue.put(vm)		
+	queue.join()
 
-		vmcount += 1
-		print '{0:2d}'.format(vmcount),
-		print "{0:30} {1:10} {2:3} {3:14} {4:4} {5:3}".\
-			format(vm['name'][0:18] + ' (' + vm['instancename'] + ')', \
-			vm['state'], ping, vm['nic'][0]['ipaddress'], vm['memory'], \
-			vm['haenable'])
+	for vm in rvms:
+	#	if vm['state'] != running:
+	#		vm['ping'] = '-'
+	    #if (paramState == running and state == paramState):
+	    	#print json.dumps(vm, indent=4)
+		printVM(vm)
+
+	for vm in nrvms:
+		printVM(vm)
+
 		#print "{0:20} {1:10} {2:3} {3:10} {4:10} {5:10}".format(vm['name'][0:20], vm['state'], 'OK', vm['nic'][0]['ipaddress'], vm['instancename'], vm['memory'])
 	    #print repr ((vm['name'], vm['state']))
    	 #print "{0} {1}".format(vm['name'], vm['state'])
  	   #print "%s %s %s" % (vm['id'], vm['name'], vm['state'])
-	queue.join()
 
 '''
 for vm in vms:
@@ -87,6 +106,7 @@ for vm in vms:
 	print "{0:20} {1:10}".format(vm['name'][0:20], vm['state'])
 '''
 
-listVMs('Running')
-listVMs('Not Running')
+listVMs()
+#listVMs('Running')
+#listVMs('Not Running')
 
