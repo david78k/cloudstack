@@ -4,6 +4,10 @@ CloudStack Python Client
 Python client library for the CloudStack User API v3.0.0. For older versions,
 see the [tags](https://github.com/jasonhancock/cloudstack-python-client/tags).
 
+- list: simple VM list
+- test: detailed VM list including ping result, IP address, memory, KVM display name
+
+
 Examples
 --------
 
