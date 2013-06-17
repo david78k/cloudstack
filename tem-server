@@ -23,7 +23,8 @@ while True:
    c.close()                # Close the connection
    
    # spawn a thread to process the request
-   print 'Can the failure be handled?'   
+   print 'Can the failure be handled? If so, take appropriate action by automatic scripts or administrators.'   
+   print 'Check if the failure is in the fault-event-action table. If not, call administrators.'
    if '111' in msg:
 	print 'stop-firewall'
 #	stop-firewall
