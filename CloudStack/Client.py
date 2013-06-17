@@ -1,4 +1,5 @@
 from BaseClient import BaseClient
+import urllib2 
 
 class Client(BaseClient):
     def createNetworkOffering(self, args={}):
@@ -1121,7 +1122,12 @@ class Client(BaseClient):
             page - Pagination
         '''
 
-        return self.request('listVirtualMachines', args)
+	try:
+	        response = self.request('listVirtualMachines', args)
+	except urllib2.URLError as e:
+		raise e
+	return response
+        #return self.request('listVirtualMachines', args)
  
 
     def getVMPassword(self, args={}):

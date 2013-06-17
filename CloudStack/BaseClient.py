@@ -5,6 +5,7 @@ import hmac
 import base64
 import hashlib
 import re
+import sys, traceback
 
 class BaseClient(object):
     def __init__(self, api, apikey, secret):
@@ -34,7 +35,19 @@ class BaseClient(object):
 
         query += '&signature=' + urllib.quote_plus(signature)
 
-        response = urllib2.urlopen(self.api + '?' + query)
+	try:
+	        response = urllib2.urlopen(self.api + '?' + query)
+	except urllib2.HTTPError as e:
+		print e.code
+	except urllib2.URLError as e:
+		#print "URLError: ", e.args, e.reason, e.reason.errno
+		#e = sys.exc_info()[0]
+		#sys.exit(0)
+		raise e
+	except Exception:
+		e = sys.exc_info()[0]
+		print "ERROR: ", e
+		sys.exit(0)
         decoded = json.loads(response.read())
        
         propertyResponse = command.lower() + 'response'
