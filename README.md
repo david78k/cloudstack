@@ -4,9 +4,16 @@ CloudStack Python Client
 Python client library for the CloudStack User API v3.0.0. For older versions,
 see the [tags](https://github.com/jasonhancock/cloudstack-python-client/tags).
 
-- list: simple VM list
-- test: detailed VM list including ping result, IP address, memory, KVM display name
+- list-simple: simple VM list with number, name, and state 
+- list: detailed VM list including ping result, IP address, memory, KVM display name
 
+No VM Name                        State     Ping Network       Memory HA
+--------------------------------------------------------------------------------
+ 1 centos6-1 (i-2-14-VM)          Running    OK  192.244.34.112  2048   1
+ 2 centos6-2 (i-2-13-VM)          Running    OK  192.244.34.118  2048   1
+ 3 centos6 (i-2-11-VM)            Running    OK  192.244.34.116  2048   1
+ 4 centos5-ha (i-2-10-VM)         Stopped    -   192.244.34.128   512   1
+ 5 hadoop4 (i-2-9-VM)             Stopped    -   192.244.34.115  2048   0
 
 Examples
 --------
