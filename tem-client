@@ -61,6 +61,8 @@ def printVM(vm):
 def listVMs():
 	running = 'Running'
 	queue = Queue()
+
+	global rvms
 	rvms = []
 	nrvms = []
 
@@ -110,3 +112,34 @@ listVMs()
 #listVMs('Running')
 #listVMs('Not Running')
 
+def request(vm, fmessage):
+	import socket               # Import socket module
+
+	s = socket.socket()         # Create a socket object
+	host = socket.gethostname() # Get local machine name
+	host = 'c11node27'             # Get remote machine name
+	port = 9999                # Reserve a port for your service.
+
+	s.connect((host, port))
+	s.send('translation request: %s@%s' % (fmessage, vm['name']))
+	print s.recv(1024)
+	s.close 
+
+def performOp(vm, op):
+	print vm['name'] + ", " + op	
+	if vm['name'] == 'centos6':
+		return 0
+	return 1
+
+def monitor():
+	global rvms
+	for vm in rvms:
+		op = "rename"
+		result = performOp(vm, op)
+		if result == 1:
+			print op + ' on ' + vm['name'] + ' succeeded.'
+		else:
+			request(vm, op + ' error')
+			print op + ' on ' + vm['name'] + ' failed.'
+
+monitor()
