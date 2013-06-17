@@ -2,7 +2,6 @@ cloudstack
 ===
 
 TEM (Triple Elements Model) with CloudStack Python Client
-========================================================
 
 Python client library for the CloudStack User API v3.0.0. For older versions,
 see the [tags](https://github.com/jasonhancock/cloudstack-python-client/tags).
