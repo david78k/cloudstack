@@ -21,4 +21,10 @@ while True:
    print 'Got message (' + str(reqnum) + ') [' + msg + '] from', addr
    c.send('Request ' + str(reqnum) + ' received.')
    c.close()                # Close the connection
+   
+   # spawn a thread to process the request
+   print 'Can the failure be handled?'   
+   if '111' in msg:
+	stop-firewall
+
    reqnum += 1
