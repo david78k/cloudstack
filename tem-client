@@ -22,7 +22,7 @@ def pinger(q):
     while True:
         #ip = q.get()
         vm = q.get()
-	name = vm['name']
+	name = vm['displayname']
 	#ip = vm.addr
 	ip = vm['nic'][0]['ipaddress'] 
         #print "Thread %s: Pinging %s" % (name, ip)
@@ -45,7 +45,7 @@ def pinger(q):
 
 print 'No',
 #print "{0:20} {1:10} {2:3} {3:3} {4:3} {5:3}".format('VM Name', 'State', 'Ping', 'Network', 'Memory', 'Disk')
-print "{0:30} {1:9} {2:3} {3:13} {4:4} {5:3}".format('VM Name', \
+print "{0:30} {1:9} {2:3} {3:13} {4:4} {5:3}".format('VM_Display_Name', \
 	'State', 'Ping', 'Network', 'Memory', 'HA', 'Disk')
 print '-'*80
 
@@ -54,7 +54,7 @@ def printVM(vm):
 	vmcount += 1
 	print '{0:2d}'.format(vmcount),
 	print "{0:30} {1:10} {2:3} {3:14} {4:4} {5:3}".\
-	format(vm['name'][0:18] + ' (' + vm['instancename'] + ')', vm['state'], vm['ping'], vm['nic'][0]['ipaddress'], vm['memory'], \
+	format(vm['displayname'][0:18] + ' (' + vm['instancename'] + ')', vm['state'], vm['ping'], vm['nic'][0]['ipaddress'], vm['memory'], \
 			vm['haenable'])
 
 #def listVMs(paramState):
@@ -121,13 +121,19 @@ def request(vm, fmessage):
 	port = 9999                # Reserve a port for your service.
 
 	s.connect((host, port))
-	s.send('translation request: %s@%s' % (fmessage, vm['name']))
+	s.send('translation request: %s@%s' % (fmessage, vm['displayname']))
 	print s.recv(1024)
 	s.close 
 
 def performOp(vm, op):
-	print vm['name'] + ", " + op	
-	if vm['name'] == 'centos6':
+	print vm['displayname'] + ", " + op	
+	if vm['displayname'] == 'centos6':
+		args = {}
+		args['id'] = vm['id']
+		args['displayname'] = 'centos6-3'
+		result = cloudstack.updateVirtualMachine(args)
+		#print result
+	    	print json.dumps(result, indent=4)
 		return 0
 	return 1
 
@@ -137,9 +143,9 @@ def monitor():
 		op = "rename"
 		result = performOp(vm, op)
 		if result == 1:
-			print op + ' on ' + vm['name'] + ' succeeded.'
+			print op + ' on ' + vm['displayname'] + ' (' + vm['name'] + ') succeeded.'
 		else:
 			request(vm, op + ' error')
-			print op + ' on ' + vm['name'] + ' failed.'
+			print op + ' on ' + vm['displayname'] + ' (' + vm['name'] + ') failed.'
 
 monitor()
