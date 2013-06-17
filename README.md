@@ -1,11 +1,13 @@
-CloudStack Python Client
-========================
+TEM (Triple Elements Model) with CloudStack Python Client
+========================================================
 
 Python client library for the CloudStack User API v3.0.0. For older versions,
 see the [tags](https://github.com/jasonhancock/cloudstack-python-client/tags).
 
 - list-simple: simple VM list with number, name, and state 
 - list: detailed VM list including KVM display name, ping result, IP address, memory, and HA-enabled (high availability)
+- tem-client: 
+- tem-server:
 
 ```
 No VM Name                        State     Ping Network       Memory HA
