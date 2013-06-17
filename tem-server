@@ -25,6 +25,7 @@ while True:
    # spawn a thread to process the request
    print 'Can the failure be handled?'   
    if '111' in msg:
-	stop-firewall
+	print 'stop-firewall'
+#	stop-firewall
 
    reqnum += 1
