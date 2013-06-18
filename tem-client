@@ -141,9 +141,12 @@ def printOp(vm, op, opcount, result):
 		'Yes', 'matched')
 
 def monitor():
+	print 'Test VM pool = {test1, test2, test3}'
+	print 'Operation pool = {rename, resize, take snapshot, change flavor, attach/detach volume, attach/detach nic}'
+
 	print 'No',
 	global opformat
-	opformat = "{0:8} {1:18} {2:8} {3:8} {4:15} {5:8}"
+	opformat = "{0:8} {1:18} {2:10} {3:6} {4:12} {5:8}"
 	#print "{0:5} {1:30} {2:9} {3:3} {4:13} {5:4}".format('Op', \
 	print opformat.format('Op', 'VM_Display_Name', 'API_server', 'Result', \
 				'Can_handle?', 'Validation')
