@@ -11,8 +11,12 @@ secret = '9SYWn1Gq1epD_gQL5fhg4SA6R3IShoXOhLkviuZaJdhvtunMxW0yLTbT9jKzs1tOWsqrvm
 debug = 0
 timeout = 1
 
+# ping error: Client.py, server is unrecheable
+# urllib2.URLError: <urlopen error [Errno 113] No route to host>
 cloudstack = CloudStack.Client(api, apikey, secret)
 vms = cloudstack.listVirtualMachines()
+# api server down: Client.py
+# urllib2.URLError: <urlopen error [Errno 111] Connection refused>
 vmcount = 0
 
 #wraps system ping command
