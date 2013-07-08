@@ -5,7 +5,8 @@ import json, subprocess
 from threading import Thread
 from Queue import Queue
 
-api = 'http://c11node27:8080/client/api'
+mgmtserver = 'c11node27'
+api = 'http://' + mgmtserver + ':8080/client/api'
 apikey = 'YojbgijFzzAPo64t1ZPcAXXMNLFfIK6sNpmCOuNzSOCGzOgmiTqNYdxHJwPzUGYYgUjD8Mao0JM-ymQ3fP_65w'
 secret = '9SYWn1Gq1epD_gQL5fhg4SA6R3IShoXOhLkviuZaJdhvtunMxW0yLTbT9jKzs1tOWsqrvmNH0WmSC7WMnpNvjA'
 debug = 0
@@ -13,6 +14,7 @@ timeout = 1
 
 # ping error: Client.py, server is unrecheable
 # urllib2.URLError: <urlopen error [Errno 113] No route to host>
+
 cloudstack = CloudStack.Client(api, apikey, secret)
 vms = cloudstack.listVirtualMachines()
 # api server down: Client.py
