@@ -16,9 +16,6 @@ timeout = 1
 # urllib2.URLError: <urlopen error [Errno 113] No route to host>
 
 cloudstack = CloudStack.Client(api, apikey, secret)
-vms = cloudstack.listVirtualMachines()
-# api server down: Client.py
-# urllib2.URLError: <urlopen error [Errno 111] Connection refused>
 vmcount = 0
 
 #wraps system ping command
@@ -65,6 +62,10 @@ def printVM(vm):
 
 #def listVMs(paramState):
 def listVMs():
+	vms = cloudstack.listVirtualMachines()
+	# api server down: Client.py
+	# urllib2.URLError: <urlopen error [Errno 111] Connection refused>
+
 	running = 'Running'
 	queue = Queue()
 	rvms = []
