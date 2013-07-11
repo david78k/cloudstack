@@ -46,19 +46,27 @@ def pinger(q):
         q.task_done()
 	#print json.dumps(vm, indent=4)
 
+#formathead = "{0:25} {1:7} {2:2} {3:13} {4:3} {5:2} {6:2} {7:2}"
+#formatstr = "{0:25} {1:8} {2:3} {3:12} {4:4} {5:2} {6:2} {7:2}"
+formathead = "{0:25} {1:7} {2:2} {3:13} {4:3} {5:2} {6:2}"
+formatstr = "{0:25} {1:8} {2:3} {3:12} {4:4} {5:2} {6:2}"
+
 print 'No',
 #print "{0:20} {1:10} {2:3} {3:3} {4:3} {5:3}".format('VM Name', 'State', 'Ping', 'Network', 'Memory', 'Disk')
-print "{0:30} {1:9} {2:3} {3:13} {4:4} {5:3}".format('VM_Display_Name', \
-	'State', 'Ping', 'Network', 'Memory', 'HA', 'Disk')
+#print "{0:25} {1:8} {2:3} {3:13} {4:4} {5:3}".format('VM_Display_Name', \
+print formathead.format('VM_Display_Name', \
+	'State', 'Ping', 'Network', 'RAM', 'CPU', 'HA', 'Disk')
 print '-'*80
 
 def printVM(vm):
 	global vmcount 
 	vmcount += 1
 	print '{0:2d}'.format(vmcount),
-	print "{0:30} {1:10} {2:3} {3:14} {4:4} {5:3}".\
+	#print "{0:25} {1:8} {2:3} {3:14} {4:4} {5:2} {6:2}".\
+	print formatstr.\
 	format(vm['displayname'][0:18] + ' (' + vm['instancename'] + ')', vm['state'], vm['ping'], vm['nic'][0]['ipaddress'], vm['memory'], \
-			vm['haenable'])
+			vm['cpunumber'], vm['haenable'])
+			#vm['cpunumber'], vm['cpuused'], vm['haenable'])
 
 #def listVMs(paramState):
 def listVMs():
