@@ -1,0 +1,7 @@
+#set display table
+#or edit .cloudmonkey/config
+#tabularize = true
+
+#debug: tail -f .cloudmonkey/log
+
+cloudmonkey list virtualmachines filter=displayname,name,instancename,state,haenable,cpunumber,cpuspeed,cpuused,memory,serviceofferingname
