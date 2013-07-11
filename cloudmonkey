@@ -4,4 +4,7 @@
 
 #debug: tail -f .cloudmonkey/log
 
-cloudmonkey list virtualmachines filter=displayname,name,instancename,state,haenable,cpunumber,cpuspeed,cpuused,memory,serviceofferingname
+#cloudmonkey list virtualmachines filter=displayname,name,instancename,state,haenable,cpunumber,cpuspeed,cpuused,memory,serviceofferingname
+
+# list system VMs
+cloudmonkey list systemvms filter=name,state,systemvmtype,publicip,dns1,dns2,gateway,privateip
